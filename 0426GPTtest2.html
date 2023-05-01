@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>訂餐系統</title>
+	<style>
+		/* 在這裡加入您的 CSS 設定 */
+		
+		.container {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.left-column {
+			width: 29%;
+		}
+
+		.separator {
+			width: 1px;
+			background-color: black;
+		}
+
+		.right-column {
+			width: 69%;
+		}
+
+	</style>
+	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<h1>訂餐系統</h1>
+	<div class="left-column">
+		<h2>菜單</h2>
+		<ul>
+			<li>爌肉飯 - $50<input type="number" min="0"></li>
+			<li>腳庫飯 - $80<input type="number" min="0"></li>
+			<li>大滷 - $65<span value="menu.price[i]"></span><input type="number" min="0"></li>
+		</ul>
+		<button id="submit">送出</button>
+	</div>
+	
+	<div class="separator"></div>
+	
+	<div class="right-column">
+		<h2>訂單資訊</h2>
+		<ul id="orderList"></ul>
+		<p id="orderTime"></p>
+		<p id="subtotal"></p>
+		<p id="total"></p>
+	</div>
+	
+	<script>
+	// 在這裡加入您的 JavaScript 程式碼
+		// 宣告一個空陣列用來存放所有訂單資訊
+		let orderHistory = [];
+		const submitBtn = document.getElementById('submit');
+		const orderList = document.getElementById('orderList');
+		const subtotal = document.getElementById('subtotal');
+
+		// 當按下送出按鈕時，將訂單資訊呈現在右側的區域中
+		submitBtn.addEventListener('click', function() {
+			// 每個人訂單
+			let orders = [];
+			let subtotalPrice = 0;
+			//let totalPrice = 0;
+			let htmlAddList = [];
+
+			// 取得菜單中被選取的項目
+			const menuItems = document.querySelectorAll('.left-column ul li');
+			
+			// 取得目前的日期和時間
+			const now = new Date();
+			const date = now.toLocaleDateString();
+			const time = now.toLocaleTimeString();
+
+			// 依序處理每一個被選取的項目
+			menuItems.forEach(function(item) {
+				const name = item.textContent.split('-')[0].trim();
+				const price = parseInt(item.textContent.split('$')[1].trim());
+				const quantity = parseInt(item.querySelector('input[type="number"]').value);
+
+				// 將訂單資訊呈現在右側的區域中
+				// orders = orders + `<li>${name} x ${quantity} - ${price * quantity} (${date} ${time})</li>`;
+
+				if (quantity > 0) {
+					/*// 計算小計
+					subtotalPrice += price * quantity;
+					totalPrice = totalPrice + subtotalPrice;*/
+					
+					// 將訂單資訊加入時間和日期資訊
+					let order = {
+						name: name,
+						quantity: quantity,
+						price: price,
+						subtotalPrice: subtotalPrice,
+						date: date,
+						time: time
+						};
+					orders.unshift(order);
+				}
+			});
+			// 加入訂單資訊到 orderHistory 陣列中
+			orderHistory.unshift(orders);
+			
+			orderHistory.forEach((order) => {
+				subtotalPrice = 0;
+				console.log(order[0]);
+				let dateTimeli = '<li>' + order[0].date + order[0].time + '</li>';
+				htmlAddList.push(dateTimeli);
+				console.log(htmlAddList);
+				order.forEach((item, index) => {
+					let itemli = '<li>' + item.name + "x" + item.quantity + "=" + item.quantity * item.price +'</li>';
+					htmlAddList.push(itemli)
+					subtotalPrice += item.price * item.quantity;
+				});
+				
+				let subtotalli = '<li>小計:' + subtotalPrice + '</li>'
+				htmlAddList.push(subtotalli)
+				htmlAddList.push("-------------------------------------------------")
+			});
+			// 將訂單資訊和小計、總計呈現在畫面上
+			// orderList.innerHTML = orders;
+			//subtotal.innerHTML = `小計：$${subtotalPrice}`;
+			// 將 orderHistory 陣列中的所有訂單資訊呈現在畫面上
+			/*var orderHistoryList = orderHistory.map(function(orderHistory) {
+				//return `<li>${orderhistory.name} x ${orderhistory.quantity} - $${orderhistory.price * orderhistory.quantity} (${orderhistory.date} ${orderhistory.time})</li>`;
+				return `<li> ${orderHistory.htmlAddList}</li>` + `<li>${orderHistory.name} x ${orderHistory.quantity} = $${orderHistory.price * orderHistory.quantity}</li>`;
+			});*/
+
+			//console.log(orders);
+			//console.log(orderHistory);
+			//console.log(orderHistoryList);
+			orderList.innerHTML = htmlAddList.join('');
+		});
+
+	</script>
+</body>
+</html>
