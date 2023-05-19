@@ -14,11 +14,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from trips.views import hello_world, home, post_detail
+from APP_orderMV.views import home
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^hello/$', hello_world),
     url(r'^$', home),
-    url(r'^post/(?P<pk>\d+)/$', post_detail, name='post_detail'),
 ]
