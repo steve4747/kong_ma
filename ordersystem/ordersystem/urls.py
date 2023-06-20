@@ -18,6 +18,6 @@ from APP_orderMV.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path(r'^$', home),
+    path('homepage0426/', home),
     path('APP_orderMV/', include('APP_orderMV.urls')), 
 ]
