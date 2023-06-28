@@ -1,33 +1,26 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import generics
-from APP_orderMV.models import Price_table, Product, Order_main, Order_all
-from .serializers import PriceTableSerializer, ProductSerializer, OrderMainSerializer, OrderAllSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from APP_orderMV.models import Products, Order_main, Order_all #Price_table,
+from .serializers import ProductsSerializer, OrderMainSerializer, OrderAllSerializer #PriceTableSerializer, 
 
 # Create your views here.
 
 def home(request):
-    priceTable = Price_table.object.all()
-    return render(request, 'home.html', {
-        'price_table': priceTable,
-    })
+    #priceTable = Price_table.object.all()
+    return render(request, 'homepage0426.html') # , {
+        #'price_table': priceTable,
+    #})
 
+class ProductsList(generics.ListCreateAPIView): 
+    queryset = Products.objects.all() 
+    serializer_class = ProductsSerializer
 
-class PriceTableList(generics.ListCreateAPIView): 
-    queryset = Price_table.objects.all() 
-    serializer_class = PriceTableSerializer
-
-class PriceTableDetail(generics.RetrieveUpdateDestroyAPIView): 
-    queryset = Price_table.objects.all() 
-    serializer_class = PriceTableSerializer
-
-class ProductList(generics.ListCreateAPIView): 
-    queryset = Product.objects.all() 
-    serializer_class = ProductSerializer
-
-class ProductDetail(generics.RetrieveUpdateDestroyAPIView): 
-    queryset = Product.objects.all() 
-    serializer_class = ProductSerializer
+class ProductsDetail(generics.RetrieveUpdateDestroyAPIView): 
+    queryset = Products.objects.all() 
+    serializer_class = ProductsSerializer
 
 class OrderMainList(generics.ListCreateAPIView): 
     queryset = Order_main.objects.all() 
@@ -44,6 +37,37 @@ class OrderAllList(generics.ListCreateAPIView):
 class OrderAllDetail(generics.RetrieveUpdateDestroyAPIView): 
     queryset = Order_all.objects.all() 
     serializer_class = OrderAllSerializer
+    
+@api_view(['POST'])
+def createOrder(request):
+    serializer = OrderAllSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+    
+@api_view(['POST'])
+def updateOrder(request, pk):
+    order = Order_all.objects.get(id=pk)
+    serializer = OrderAllSerializer(instance=order, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+    
+@api_view(['DELETE'])
+def deleteOrder(request, pk):
+    order = Order_all.objects.get(id=pk)
+    order.delete()
+    return Response('Item succsesfully delete!')
+
+@api_view(['GET'])
+def getProducts(request):
+    table = Products.objects.all()
+    serializer = ProductsSerializer(instance=table, data=request.data)
+    return Response(serializer.data)
+       
+    #getOrder, 
+
+        
 
 
 

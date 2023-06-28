@@ -1,19 +1,13 @@
 #APP_orderMV/serializers.py
 
 from rest_framework import serializers 
-from .models import Price_table, Product, Order_main, Order_all
+from .models import Products, Order_main, Order_all #Price_table, 
 
-class PriceTableSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        fields = ('__all__')  
-        model = Price_table
-
-class ProductSerializer(serializers.ModelSerializer):
+class ProductsSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('__all__')  
-        model = Product
+        model = Products
         
 class OrderMainSerializer(serializers.ModelSerializer):
 
